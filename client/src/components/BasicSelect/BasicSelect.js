@@ -5,9 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const BasicSelect = () => {
-    const intervals = [1,5,10];
-    const [interval, setInterval] = useState(1);
+const BasicSelect = ({ parentCallback, intervals, initial }) => {
 
     const listItems = intervals.map((number) =>
         <MenuItem value={number} key={number.toString()}>
@@ -17,6 +15,7 @@ const BasicSelect = () => {
 
     const handleChange = (event) => {
         setInterval(event.target.value);
+        parentCallback(event.target.value);
     };
 
     return (
@@ -27,7 +26,7 @@ const BasicSelect = () => {
                     <Select
                         labelId="select-label"
                         id="simple-select"
-                        value={interval}
+                        value={initial}
                         label="Interval"
                         onChange={handleChange}
                     >
