@@ -13,15 +13,14 @@ wss.on('connection', (socket) => {
     }
     socket.on('message', message  => {
         try {
-            const selectedMap = message.toString();
+            const selectedMap = message?.toString();
             const newMap = {
                 'work-home': village,
                 'work-lunch': lunch,
                 'lunch-work': lunch
             }
-            console.log(selectedMap)
             const chooseMap = newMap[selectedMap]
-            socket.send(chooseMap.toString('utf8'));
+            socket.send(chooseMap?.toString('utf8'));
         } catch(e) {
             console.log('Something gone wrong, please try again:', e)
         }

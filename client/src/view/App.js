@@ -5,32 +5,36 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import List from "../components/List/List";
 
 const App = () => {
-    const [popeyData, setPopeyData] = useState(null);
-    const inProgress = useRef(false);
+    const [mapData, setMapData] = useState(null);
     const [ws, setWs] = useState(new WebSocket(process.env.REACT_APP_WEBSOCKET));
 
     const routes = ['work-home','work-lunch','lunch-work'];
     const intervals = [1,5,10];
     const [route, setRoute] = useState('work-home');
     const [interval, setInterval] = useState(1);
+    const [mapKey, setMapKey] = useState(0);
 
-    //functions
-    const changeRoute = (name) => {
-        ws.send(name);
+    //init change route
+    const changeRoute = () => {
+        ws.send(route);
     }
 
-    const reversCoordinate = (copyMap) => {
-        const copyCoordinatesReverse = copyMap.features[0].geometry.coordinates.reverse();
-        copyMap.features[0].geometry.coordinates = [];
-        copyMap.features[0].geometry.coordinates.push(copyCoordinatesReverse);
-        setPopeyData(copyMap);
+    // for reverse coordination for lunch-work
+    const reversCoordinate = (map) => {
+        const copyCoordinates = map.features[0].geometry.coordinates;
+        let finalMap = (map);
+        finalMap.features[0].geometry.coordinates = copyCoordinates.reverse();
+        return finalMap;
     }
 
-    const clearCoordinates = (map) => {
-        const copyMap = JSON.parse(JSON.stringify(map))
-        const copyCoordinates = popeyData.features[0].geometry.coordinates
-        copyMap.features[0].geometry.coordinates = [copyCoordinates[0]];
-        return copyMap
+    const setMapProperly = (map) => {
+        if (route === 'lunch-work') {
+            setMapData(reversCoordinate(map));
+        } else {
+            setMapData(map);
+        }
+        const currentKey = mapKey + 1;
+        setMapKey(currentKey);
     }
 
     useEffect(() => {
@@ -40,16 +44,7 @@ const App = () => {
         ws.onmessage =  (e) => {
             let map =  e.data;
             const currMap = JSON.parse(map);
-            inProgress.current = false
-            if (route === 'lunch-work') {
-                const currMap = JSON.parse(map);
-                reversCoordinate(currMap);
-                inProgress.current = true
-            } else {
-                const currMap = JSON.parse(map);
-                setPopeyData(currMap);
-                inProgress.current = true
-            }
+            setMapProperly(currMap);
         }
         return () => {
             ws.onclose = () => {
@@ -61,15 +56,16 @@ const App = () => {
 
     return (
         <div className="App">
-            <header className="header w-full z-20 py-4 px-4 absolute flex justify-between items-start">
-                <h1 className="text-2xl text-white py-3 px-5 font-bold rounded-md">Popeye-map</h1>
-                <div className="flex flex-col bg-white px-3 py-3 shadow-md rounded-md">
-                    <BasicSelect intervals={intervals} initial={interval} parentCallback={useCallback((interval) => {setInterval(interval)}, [])}/>
-                    <List routes={routes} parentCallback={useCallback((r) => { setRoute(r); changeRoute(r); }, [])} />
+            <header className="header absolute right-0 top-0 z-20 shadow-md">
+                <h1 className="text-2xl text-white py-3 px-5 font-bold">PopeyeMAP</h1>
+                <div className="flex flex-col bg-white px-3 py-3">
+                    <BasicSelect intervals={intervals} initial={interval} parentCallback={useCallback((interval) => setInterval(interval), [])}/>
+                    <List routes={routes} parentCallback={useCallback((r) => setRoute(r), [])} />
+                    <button className="mt-4 rounded-md py-3 shadow-md bg-blue-600 text-sm text-white hover:bg-blue-500 transition" onClick={() => changeRoute()}>Set map</button>
                 </div>
             </header>
             <div className="w-full">
-                {popeyData && inProgress ? <GeoMap geoInterval={interval} geoData={clearCoordinates(popeyData)} geoCoordinates={popeyData.features[0].geometry.coordinates} /> : <p>Loading map...</p>}
+                {mapData ? <GeoMap key={mapKey} geoInterval={interval} geoData={mapData} /> : <p>Loading map...</p>}
             </div>
         </div>
     );
