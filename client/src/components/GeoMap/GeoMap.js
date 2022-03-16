@@ -31,9 +31,9 @@ const GeoMap = ({geoInterval, geoData, pinType}) => {
 
     const onMapLoad = useCallback(async () => {
         const data = await geoData;
+        const interval = geoInterval * 1000;
         // save full coordinate list for later
         const coordinates = geoData.features[0].geometry.coordinates;
-        const interval = geoInterval * 1000;
         // start by showing just the first coordinate
         data.features[0].geometry.coordinates = [coordinates[0]];
         map.current.jumpTo({'center': coordinates[0], 'zoom': 15});
