@@ -2,7 +2,6 @@ import './App.scss';
 import BasicSelect from "../components/BasicSelect/BasicSelect";
 import GeoMap from "../components/GeoMap/GeoMap";
 import {useCallback, useEffect, useRef, useState} from "react";
-import List from "../components/List/List";
 
 const App = () => {
     const [mapData, setMapData] = useState(null);
@@ -13,9 +12,11 @@ const App = () => {
     const [route, setRoute] = useState('work-home');
     const [interval, setInterval] = useState(1);
     const [mapKey, setMapKey] = useState(0);
+    const [pinType, setPinType] = useState('work-home');
 
     //init change route
     const changeRoute = () => {
+        setPinType(route);
         ws.send(route);
     }
 
@@ -59,13 +60,13 @@ const App = () => {
             <header className="header absolute right-0 top-0 z-20 shadow-md">
                 <h1 className="text-2xl text-white py-3 px-5 font-bold">PopeyeMAP</h1>
                 <div className="flex flex-col bg-white px-3 py-3">
-                    <BasicSelect intervals={intervals} initial={interval} parentCallback={useCallback((interval) => setInterval(interval), [])}/>
-                    <List routes={routes} parentCallback={useCallback((r) => setRoute(r), [])} />
-                    <button className="mt-4 rounded-md py-3 shadow-md bg-blue-600 text-sm text-white hover:bg-blue-500 transition" onClick={() => changeRoute()}>Set map</button>
+                    <BasicSelect label="Intervals" values={intervals} initial={interval} parentCallback={useCallback((i) => setInterval(i), [])}/>
+                    <BasicSelect label="Routes" values={routes} initial={route} parentCallback={useCallback((r) => setRoute(r), [])}/>
+                    <button className="rounded-md py-3 shadow-md bg-blue-600 text-sm text-white hover:bg-blue-500 transition" onClick={() => changeRoute()}>Set map</button>
                 </div>
             </header>
             <div className="w-full">
-                {mapData ? <GeoMap key={mapKey} geoInterval={interval} geoData={mapData} /> : <p>Loading map...</p>}
+                {mapData ? <GeoMap key={mapKey} geoInterval={interval} geoData={mapData} pinType={pinType}/> : <p>Loading map...</p>}
             </div>
         </div>
     );

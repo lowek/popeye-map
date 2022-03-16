@@ -1,11 +1,12 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Map, {Source, Layer} from 'react-map-gl';
+import Map, {Source, Layer, Marker} from 'react-map-gl';
 import {useCallback, useEffect, useRef, useState} from "react";
+import Pin from "../Pin/Pin";
 
-const GeoMap = ({geoInterval, geoData}) => {
-    const map = useRef();
-    const marker = useRef();
+const GeoMap = ({geoInterval, geoData, pinType}) => {
+    const map = useRef(null);
     const [mapData, setMapData] = useState(null);
+    const [pin, setPin] = useState(null);
 
     // display line on map
     const lineStyle = {
@@ -20,6 +21,7 @@ const GeoMap = ({geoInterval, geoData}) => {
     };
 
     useEffect(() => {
+        //initial map
         const copyMap = JSON.parse(JSON.stringify(geoData))
         const copyCoordinates = geoData.features[0].geometry.coordinates
         copyMap.features[0].geometry.coordinates = [copyCoordinates[0]];
@@ -37,12 +39,11 @@ const GeoMap = ({geoInterval, geoData}) => {
         map.current.jumpTo({'center': coordinates[0], 'zoom': 15});
         map.current.setPitch(30);
 
-        // on a regular basis, add more coordinates from the saved list and update the map
         let i = 0;
         const timer = setInterval(() => {
             if (i < coordinates.length) {
                 data.features[0].geometry.coordinates.push(coordinates[i]);
-                marker.current = coordinates[i];
+                setPin(coordinates[i])
                 if (map && map.current) {
                     map.current.getSource('trace').setData(data);
                     map.current.panTo(coordinates[i]);
@@ -52,28 +53,30 @@ const GeoMap = ({geoInterval, geoData}) => {
                 window.clearInterval(timer);
             }
         }, interval);
-    }, []);
+    }, [geoData]);
 
     return (
         <>
-            {geoInterval && geoData ?
+            {geoInterval && geoData && mapData ?
                 <Map
                     ref={map}
-                    // viewState={initialView}
                     style={{width: '100%', height: '100vh'}}
                     mapStyle="mapbox://styles/mapbox/streets-v9"
                     mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
                     onLoad={onMapLoad}
                 >
                     <Source id="trace" type="geojson" data={mapData}>
-                        <Layer {...lineStyle} />
+                        <Layer {...lineStyle} id="line" />
+                        {pin && <Marker longitude={pin[0]} latitude={pin[1]} anchor="center">
+                            <Pin type={pinType} />
+                        </Marker>
+                        }
                     </Source>
                 </Map> : <p>Loading map...</p>
             }
         </>
     );
-};
-
+}
 export default GeoMap;
 
 

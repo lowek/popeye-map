@@ -5,29 +5,28 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const BasicSelect = ({ parentCallback, intervals, initial }) => {
+const BasicSelect = ({ parentCallback, label, values, initial }) => {
 
-    const listItems = intervals.map((number) =>
+    const listItems = values.map((number) =>
         <MenuItem value={number} key={number.toString()}>
             {number}
         </MenuItem>
     );
 
     const handleChange = (event) => {
-        setInterval(event.target.value);
         parentCallback(event.target.value);
     };
 
     return (
         <>
-            <Box sx={{ minWidth: 120 }}>
+            <Box sx={{ minWidth: 120 }} className="mb-3">
                 <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Interval</InputLabel>
+                    <InputLabel id="demo-simple-select-label">{label}</InputLabel>
                     <Select
                         labelId="select-label"
                         id="simple-select"
                         value={initial}
-                        label="Interval"
+                        label={label}
                         onChange={handleChange}
                     >
                         {listItems}
