@@ -1,9 +1,9 @@
-import {useState} from "react";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import PropTypes from "prop-types";
 
 const BasicSelect = ({ parentCallback, label, values, initial }) => {
 
@@ -36,5 +36,10 @@ const BasicSelect = ({ parentCallback, label, values, initial }) => {
         </>
     );
 };
-
+BasicSelect.propTypes = {
+    parentCallback: PropTypes.func,
+    label: PropTypes.string,
+    values: PropTypes.array,
+    initial: PropTypes.string || PropTypes.number
+}
 export default BasicSelect;

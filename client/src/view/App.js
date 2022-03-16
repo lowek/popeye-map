@@ -1,11 +1,11 @@
 import './App.scss';
 import BasicSelect from "../components/BasicSelect/BasicSelect";
 import GeoMap from "../components/GeoMap/GeoMap";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 const App = () => {
     const [mapData, setMapData] = useState(null);
-    const [ws, setWs] = useState(new WebSocket(process.env.REACT_APP_WEBSOCKET));
+    const [ws] = useState(new WebSocket(process.env.REACT_APP_WEBSOCKET));
 
     const routes = ['work-home','work-lunch','lunch-work'];
     const intervals = [1,5,10];
@@ -28,16 +28,6 @@ const App = () => {
         return finalMap;
     }
 
-    const setMapProperly = (map) => {
-        if (route === 'lunch-work') {
-            setMapData(reversCoordinate(map));
-        } else {
-            setMapData(map);
-        }
-        const currentKey = mapKey + 1;
-        setMapKey(currentKey);
-    }
-
     useEffect(() => {
         ws.onopen = (e) => {
             console.log('WebSocket Connected');
@@ -45,15 +35,23 @@ const App = () => {
         ws.onmessage =  (e) => {
             let map =  e.data;
             const currMap = JSON.parse(map);
+            const setMapProperly = map => {
+                if (route === 'lunch-work') {
+                    setMapData(reversCoordinate(map));
+                } else {
+                    setMapData(map);
+                }
+                const currentKey = mapKey + 1;
+                setMapKey(currentKey);
+            }
             setMapProperly(currMap);
         }
         return () => {
             ws.onclose = () => {
                 console.log('WebSocket Disconnected');
-                setWs(new WebSocket(URL));
             }
         }
-    }, [ws.onmessage, ws.onopen, ws.onclose]);
+    }, [ws.onmessage, ws.onopen, ws.onclose, ws, mapKey, route]);
 
     return (
         <div className="App">

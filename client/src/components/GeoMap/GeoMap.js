@@ -2,11 +2,12 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Map, {Source, Layer, Marker} from 'react-map-gl';
 import {useCallback, useEffect, useRef, useState} from "react";
 import Pin from "../Pin/Pin";
+import PropTypes from 'prop-types';
 
 const GeoMap = ({geoInterval, geoData, pinType}) => {
     const map = useRef(null);
     const [mapData, setMapData] = useState(null);
-    const [pin, setPin] = useState(null);
+    const [pin, setPin] = useState(geoData.features[0].geometry.coordinates[0]);
 
     // display line on map
     const lineStyle = {
@@ -33,27 +34,26 @@ const GeoMap = ({geoInterval, geoData, pinType}) => {
         // save full coordinate list for later
         const coordinates = geoData.features[0].geometry.coordinates;
         const interval = geoInterval * 1000;
-
         // start by showing just the first coordinate
         data.features[0].geometry.coordinates = [coordinates[0]];
         map.current.jumpTo({'center': coordinates[0], 'zoom': 15});
         map.current.setPitch(30);
 
-        let i = 0;
+        let i = 1;
         const timer = setInterval(() => {
             if (i < coordinates.length) {
-                data.features[0].geometry.coordinates.push(coordinates[i]);
-                setPin(coordinates[i])
                 if (map && map.current) {
+                    data.features[0].geometry.coordinates.push(coordinates[i]);
+                    setPin(coordinates[i])
                     map.current.getSource('trace').setData(data);
                     map.current.panTo(coordinates[i]);
+                    i++;
                 }
-                i++;
             } else {
                 window.clearInterval(timer);
             }
         }, interval);
-    }, [geoData]);
+    }, [geoData, geoInterval]);
 
     return (
         <>
@@ -66,9 +66,9 @@ const GeoMap = ({geoInterval, geoData, pinType}) => {
                     onLoad={onMapLoad}
                 >
                     <Source id="trace" type="geojson" data={mapData}>
-                        <Layer {...lineStyle} id="line" />
+                        <Layer {...lineStyle} id="line"/>
                         {pin && <Marker longitude={pin[0]} latitude={pin[1]} anchor="center">
-                            <Pin type={pinType} />
+                            <Pin type={pinType}/>
                         </Marker>
                         }
                     </Source>
@@ -76,6 +76,11 @@ const GeoMap = ({geoInterval, geoData, pinType}) => {
             }
         </>
     );
+}
+GeoMap.propTypes = {
+    geoInterval: PropTypes.number,
+    geoData: PropTypes.object,
+    pinType: PropTypes.string
 }
 export default GeoMap;
 

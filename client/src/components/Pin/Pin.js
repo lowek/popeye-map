@@ -1,8 +1,9 @@
 import {useRef} from "react";
 import car from '../../assets/img/car.png'
 import guy from '../../assets/img/guy.png'
+import PropTypes from "prop-types";
+
 const Pin = ({type}) => {
-    console.log(type);
     const paths = useRef({
         'work-home': car,
         default: guy
@@ -14,5 +15,7 @@ const Pin = ({type}) => {
         </>
     );
 };
-
+Pin.propTypes = {
+    type: PropTypes.string,
+}
 export default Pin;
