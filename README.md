@@ -17,8 +17,7 @@ Use command `docker-compose up --build`
 
 ### Components
 
-
-#### MapPin
+#### GeoMap
 Props | type | example value
 --- | --- | --- |
 geoInterval | number | 4
