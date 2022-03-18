@@ -1,7 +1,17 @@
 {
+  "name": "server",
+  "version": "0.1.0",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "author": {
+    "name": "Krystian Rygiel"
+  },
   "dependencies": {
     "express": "^4.17.3",
     "rsync": "^0.6.1",
-    "ws": "^8.5.0"
+    "ws": "^8.5.0",
+    "nodemon": "^2.0.15"
   }
 }

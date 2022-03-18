@@ -1,42 +1,38 @@
 # popeye-map
  
-### 1.Install
-To start project you need install whole node packages. 
-1. Go to `/server` directory and in terminal run `npm install`
-2. Go to `/client` directory and in terminal run `npm install`
+### 1. Install dependencies
+- Go to `/server` directory and in terminal run `npm install`
+- Go to `/client` directory and in terminal run `npm install`
 
-### 2. Start project
-1. Go to `/server` directory and in terminal run `node server.js`, you can also use `nodemon server.js`
-2. Go to `/client` directory and in terminal run `npm run start`
+### 2. Run application
+- Go to `/server` directory and use command `nodemon`
+- Go to `/client` directory and use command `npm run start`
 
-Most important things from the project below. 
-This code is to put new coordination to array, which print line on map.
+## Run by Docker
 
-        const data = await geoData;
-        const interval = geoInterval * 1000;
+Use command `docker-compose up --build`
 
-        // save full coordinate list for later
-        const coordinates = geoData.features[0].geometry.coordinates;
+### 3. Run cypress
+`npx cypress open`
 
-        // start by showing just the first coordinate
-        data.features[0].geometry.coordinates = [coordinates[0]];
-        
-        map.current.jumpTo({'center': coordinates[0], 'zoom': 15});
-        map.current.setPitch(30);
-
-        let i = 1;
-        const timer = setInterval(() => {
-            if (i < coordinates.length) {
-                if (map && map.current) {
-                    data.features[0].geometry.coordinates.push(coordinates[i]);
-                    setPin(coordinates[i])
-                    map.current.getSource('trace').setData(data);
-                    map.current.panTo(coordinates[i]);
-                    i++;
-                }
-            } else {
-                window.clearInterval(timer);
-            }
-        }, interval);
+### Components
 
 
+#### MapPin
+Props | type | example value
+--- | --- | --- |
+geoInterval | number | 4
+geoData | object | { type: "FeatureCollection" }
+pinType | string | work-lunch
+
+#### Basic Select
+Props | type | example value
+--- | --- | --- |
+label | string | Example title
+values | array | [1,2,3,]
+initial | string/number | 1
+
+#### MapPin
+Props | type | example value
+--- | --- | --- |
+type | string | work-lunch

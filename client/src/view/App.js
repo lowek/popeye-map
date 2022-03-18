@@ -23,9 +23,8 @@ const App = () => {
     // for reverse coordination for lunch-work
     const reversCoordinate = (map) => {
         const copyCoordinates = map.features[0].geometry.coordinates;
-        let finalMap = (map);
-        finalMap.features[0].geometry.coordinates = copyCoordinates.reverse();
-        return finalMap;
+        map.features[0].geometry.coordinates = copyCoordinates.reverse();
+        return map;
     }
 
     useEffect(() => {
@@ -60,7 +59,7 @@ const App = () => {
                 <div className="flex flex-col bg-white px-3 py-3">
                     <BasicSelect label="Intervals" values={intervals} initial={interval} parentCallback={useCallback((i) => setInterval(i), [])}/>
                     <BasicSelect label="Routes" values={routes} initial={route} parentCallback={useCallback((r) => setRoute(r), [])}/>
-                    <button className="rounded-md py-3 shadow-md bg-blue-600 text-sm text-white hover:bg-blue-500 transition" onClick={() => changeRoute()}>Set map</button>
+                    <button className="rounded-md py-3 shadow-md bg-blue-600 text-sm text-white hover:bg-blue-500 transition" id="setMap" onClick={() => changeRoute()}>Set map</button>
                 </div>
             </header>
             <div className="w-full">

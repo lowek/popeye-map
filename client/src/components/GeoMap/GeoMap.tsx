@@ -1,18 +1,20 @@
+import * as React from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Map, {Source, Layer, Marker} from 'react-map-gl';
 import {useCallback, useEffect, useRef, useState} from "react";
-import Pin from "../Pin/Pin";
+import MapPin from "../MapPin/MapPin";
 import PropTypes from 'prop-types';
+import { IGeoMap } from "@/interfaces";
 
-const GeoMap = ({geoInterval, geoData, pinType}) => {
-    const map = useRef(null);
-    const [mapData, setMapData] = useState(null);
+const GeoMap = ({geoInterval, geoData, pinType}: IGeoMap) => {
+    const map: any = useRef();
+    const [mapData, setMapData] = useState();
     const [pin, setPin] = useState(geoData.features[0].geometry.coordinates[0]);
 
     // display line on map
     const lineStyle = {
         id: 'trace',
-        type: 'line',
+        type: 'line' as 'sky',
         source: 'trace',
         paint: {
             'line-color': 'blue',
@@ -68,7 +70,7 @@ const GeoMap = ({geoInterval, geoData, pinType}) => {
                     <Source id="trace" type="geojson" data={mapData}>
                         <Layer {...lineStyle} id="line"/>
                         {pin && <Marker longitude={pin[0]} latitude={pin[1]} anchor="center">
-                            <Pin type={pinType}/>
+                            <MapPin pinType={pinType} />
                         </Marker>
                         }
                     </Source>

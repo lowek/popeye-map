@@ -1,30 +1,33 @@
+import React from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
 import PropTypes from "prop-types";
+import {IBasicSelect} from "@/interfaces";
 
-const BasicSelect = ({ parentCallback, label, values, initial }) => {
+const BasicSelect = ({ parentCallback, label, values, initial }: IBasicSelect) => {
 
-    const listItems = values.map((number) =>
-        <MenuItem value={number} key={number.toString()}>
-            {number}
-        </MenuItem>
-    );
+    const listItems = [];
+    for (const i of values) {
+        listItems.push(<MenuItem value={i} key={i.toString()}>
+            {i}
+        </MenuItem>);
+    }
 
-    const handleChange = (event) => {
+    const handleChange = (event: SelectChangeEvent<string | number>,) => {
         parentCallback(event.target.value);
     };
 
     return (
         <>
             <Box sx={{ minWidth: 120 }} className="mb-3">
-                <FormControl fullWidth>
+                <FormControl fullWidth id={`form-${label.toLowerCase()}`}>
                     <InputLabel id="demo-simple-select-label">{label}</InputLabel>
                     <Select
                         labelId="select-label"
-                        id="simple-select"
+                        id={`select-${label.toLowerCase()}`}
                         value={initial}
                         label={label}
                         onChange={handleChange}
@@ -40,6 +43,9 @@ BasicSelect.propTypes = {
     parentCallback: PropTypes.func,
     label: PropTypes.string,
     values: PropTypes.array,
-    initial: PropTypes.string || PropTypes.number
+    initial: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ])
 }
 export default BasicSelect;
