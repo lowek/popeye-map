@@ -4,15 +4,20 @@
 - Go to `/server` directory and in terminal run `npm install`
 - Go to `/client` directory and in terminal run `npm install`
 
+### 2. Config env. file
+In client directory use command `cp .env.example .env` or just create .env file and put access token from mapbox.com
+
+`REACT_APP_MAPBOX_ACCESS_TOKEN=`
+
 ### 2. Run application
 - Go to `/server` directory and use command `nodemon`
 - Go to `/client` directory and use command `npm run start`
 
 ## Run by Docker
-
 Use command `docker-compose up --build`
 
 ### 3. Run cypress
+Run cypress test in client directory
 `npx cypress open`
 
 ### Components
@@ -28,7 +33,7 @@ pinType | string | work-lunch
 Props | type | example value
 --- | --- | --- |
 label | string | Example title
-values | array | [1,2,3,]
+values | array | [1,2,3]
 initial | string/number | 1
 
 #### MapPin
