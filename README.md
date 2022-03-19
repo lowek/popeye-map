@@ -9,14 +9,14 @@ In client directory use command `cp .env.example .env` or just create .env file 
 
 `REACT_APP_MAPBOX_ACCESS_TOKEN=`
 
-### 2. Run application
+### 3. Run application
 - Go to `/server` directory and use command `nodemon`
 - Go to `/client` directory and use command `npm run start`
 
 ## Run by Docker
 Use command `docker-compose up --build`
 
-### 3. Run cypress
+### Run cypress
 Run cypress test in client directory
 `npx cypress open`
 

@@ -16,12 +16,13 @@ services:
       - server
     env_file: ./client/.env
     restart: always
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     build:
       dockerfile: Dockerfile
       context: "./client"
     volumes:
-      - ./client:/app/src
-      - ./client:/app/public
+      - ./client:/app
     ports:
       - '3000:3000'
     command: npm run start
