@@ -1,9 +1,10 @@
 FROM node:alpine
 WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
 COPY ./ ./
-EXPOSE 8880
 RUN npm i
-RUN npm install nodemon@latest -g --silent
+EXPOSE 8880
 CMD ["npm", "run", "start"]
 
 

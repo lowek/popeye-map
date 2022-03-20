@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
       context: "./server"
     volumes:
+      - /app/node_modules
       - ./server:/app
     ports:
       - '8880:8880'
@@ -22,6 +23,7 @@ services:
       dockerfile: Dockerfile
       context: "./client"
     volumes:
+      - /app/node_modules
       - ./client:/app
     ports:
       - '3000:3000'

@@ -26,7 +26,7 @@ Run cypress test in client directory
 Props | type | example value
 --- | --- | --- |
 geoInterval | number | 4
-geoData | object | { type: "FeatureCollection" }
+geoData | object | { type: "FeatureCollection", features: {...} }
 pinType | string | work-lunch
 
 #### Basic Select

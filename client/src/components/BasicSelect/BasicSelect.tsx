@@ -4,10 +4,21 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
-import PropTypes from "prop-types";
-import {IBasicSelect} from "@/interfaces";
+import PropTypes, {InferProps} from "prop-types";
 
-const BasicSelect = ({ parentCallback, label, values, initial }: IBasicSelect) => {
+const BasicSelectPropTypes  = {
+    parentCallback: PropTypes.func.isRequired,
+    label: PropTypes.string.isRequired,
+    values: PropTypes.array.isRequired,
+    initial: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]).isRequired
+}
+
+type BasicSelectType = InferProps<typeof BasicSelectPropTypes>
+
+const BasicSelect = ({ parentCallback, label, values, initial }: BasicSelectType) => {
 
     const listItems = [];
     for (const i of values) {
@@ -39,13 +50,7 @@ const BasicSelect = ({ parentCallback, label, values, initial }: IBasicSelect) =
         </>
     );
 };
-BasicSelect.propTypes = {
-    parentCallback: PropTypes.func,
-    label: PropTypes.string,
-    values: PropTypes.array,
-    initial: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ])
-}
+
+BasicSelect.propTypes = BasicSelectPropTypes
+
 export default BasicSelect;

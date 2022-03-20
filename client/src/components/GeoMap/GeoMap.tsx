@@ -3,13 +3,33 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Map, {Source, Layer, Marker} from 'react-map-gl';
 import {useCallback, useEffect, useRef, useState} from "react";
 import MapPin from "../MapPin/MapPin";
-import PropTypes from 'prop-types';
-import { IGeoMap } from "@/interfaces";
+import PropTypes, {InferProps} from 'prop-types';
 
-const GeoMap = ({geoInterval, geoData, pinType}: IGeoMap) => {
-    const map: any = useRef();
-    const [mapData, setMapData] = useState();
-    const [pin, setPin] = useState(geoData.features[0].geometry.coordinates[0]);
+const GeoMapPropTypes = {
+    geoInterval: PropTypes.number.isRequired,
+    geoData: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        features: PropTypes.arrayOf(
+            PropTypes.exact({
+                type: PropTypes.string.isRequired,
+                properties: PropTypes.object.isRequired,
+                geometry: PropTypes.shape({
+                        type: PropTypes.string.isRequired,
+                        coordinates: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number).isRequired).isRequired
+                    }
+                ).isRequired
+            }).isRequired
+        ).isRequired
+    }).isRequired,
+    pinType: PropTypes.string.isRequired
+}
+
+type GeoMapType = InferProps<typeof GeoMapPropTypes>
+
+const GeoMap = ({geoInterval, geoData, pinType}: GeoMapType) => {
+    const map = useRef<any>();
+    const [mapData, setMapData] = useState<any>();
+    const [pin, setPin] = useState<any>(geoData.features[0].geometry.coordinates[0]);
 
     // display line on map
     const lineStyle = {
@@ -38,6 +58,7 @@ const GeoMap = ({geoInterval, geoData, pinType}: IGeoMap) => {
         const coordinates = geoData.features[0].geometry.coordinates;
         // start by showing just the first coordinate
         data.features[0].geometry.coordinates = [coordinates[0]];
+        // follow object
         map.current.jumpTo({'center': coordinates[0], 'zoom': 15});
         map.current.setPitch(30);
 
@@ -79,11 +100,8 @@ const GeoMap = ({geoInterval, geoData, pinType}: IGeoMap) => {
         </>
     );
 }
-GeoMap.propTypes = {
-    geoInterval: PropTypes.number,
-    geoData: PropTypes.object,
-    pinType: PropTypes.string
-}
+GeoMap.propTypes = GeoMapPropTypes
+
 export default GeoMap;
 
 

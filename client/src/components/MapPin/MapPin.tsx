@@ -3,20 +3,18 @@ import React from 'react';
 import car from '../../assets/img/car.png';
 //@ts-ignore
 import guy from '../../assets/img/car.png';
-import PropTypes from "prop-types";
-import {IMapPin, TPin} from "@/interfaces";
+import PropTypes, { InferProps } from "prop-types";
 
-const MapPin = ({ pinType } : { pinType:TPin}) => {
-    const paths: IMapPin = {
-        'work-home': car,
-        default: guy
-    }
-    const getImagePath = paths[pinType] ||paths.default
+const PinPropTypes = {
+    pinType: PropTypes.oneOf(['work-home', 'lunch-work', 'work-lunch']).isRequired
+}
+type PinType = InferProps<typeof PinPropTypes>
+
+const MapPin = ({ pinType } : PinType) => {
+    const getImagePath = pinType === 'work-home' ? car : guy
     return  (<img src={getImagePath} alt="pin" />);
 };
 
-MapPin.propTypes = {
-    pinType: PropTypes.string,
-}
+MapPin.propTypes = PinPropTypes
 
 export default MapPin
